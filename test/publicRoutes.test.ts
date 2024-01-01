@@ -1,11 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import Elysia from "elysia";
 
 describe('Public Routes test', () => {
+
     it('auth post request', async () => {
         const resp = await fetch('http://localhost:3002/auth', {
             method: 'POST',
-            body: JSON.stringify({email: 'login', password: 'password'}),
+            body: JSON.stringify({email: 'login@login.com', password: 'password'}),
             headers: {'Content-Type': 'application/json'},
         })
 
