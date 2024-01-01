@@ -9,7 +9,7 @@ bun install
 
 To start the local development server run:
 ```bash
-bun run dev
+bun dev
 ```
 
 The server will start on 
