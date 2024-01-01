@@ -2,6 +2,11 @@
 
 ## BACK-END
 
+Don't forget to install dependencies ***first time***: 
+```bash
+bun install
+```
+
 To start the local development server run:
 ```bash
 bun run dev
