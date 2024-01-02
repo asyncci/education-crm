@@ -27,12 +27,6 @@ export const registerDto = t.Object({
     ], {
         error: 'Provide correct `password`'
     }),
-    firstName: t.String({
-        error: 'Provide correct `firstName`'
-    }),
-    lastName: t.String({
-        error: 'Provide correct `lastName`'
-    }),
     role: t.TemplateLiteral('${student|mentor}', {
         error: 'Provide correct `role`'
     }),

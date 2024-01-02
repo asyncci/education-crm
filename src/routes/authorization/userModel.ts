@@ -3,10 +3,7 @@ import mongoose, { Schema, model } from "mongoose";
 let UserSchema = new Schema({
     email: String,
     password: String,
-    profile: {
-        firstName: String,
-        lastName: String,
-    },
+    profile: { type: Schema.Types.ObjectId, ref: 'Profile'},
     role: { type: String, enum: ['student', 'mentor', 'admin'] },
     token: String,
 })

@@ -2,12 +2,12 @@ import Elysia, { t } from "elysia";
 import { User } from "./userModel";
 import { registerDto, signDto } from "./userDtos";
 import { sign } from "jsonwebtoken";
-import { config } from "../../config";
-import { comparePassword } from "../lib/core";
+import { config } from "../../../config";
+import { comparePassword } from "../../lib/core";
 
-export const authorization = new Elysia({ name: 'authorization' })
+export const userController = new Elysia({ name: 'authorization' })
     .post('/register', async ({ body, set }) => {
-        const { email, firstName, lastName, password, role } = body
+        const { email, password, role } = body
         const user = await User.findOne({ 'email': email })
         if (user) {
             set.status = 'Conflict'
@@ -18,10 +18,6 @@ export const authorization = new Elysia({ name: 'authorization' })
 
         userData.email = email
         userData.password = typeof password === 'number' ? password.toString() : password
-        userData.profile = {
-            firstName: firstName,
-            lastName: lastName,
-        }
         userData.role = role
 
         return await userData
@@ -34,11 +30,17 @@ export const authorization = new Elysia({ name: 'authorization' })
                 )
 
                 await User.updateOne({ _id: userObj._id }, { $set: { token: token } })
+                    .catch(() => {
+                        set.status = 'Internal Server Error'
+                        return {
+                            error: "Can't save user to database"
+                        }
+                    })
 
                 const data = {
+                    _id: userObj._id,
                     email: userObj.email,
-                    firstName: userObj.profile?.firstName,
-                    lastName: userObj.profile?.lastName,
+                    profile: userObj.profile || null,
                     role: userObj.role,
                     token: token,
                 };
@@ -54,7 +56,7 @@ export const authorization = new Elysia({ name: 'authorization' })
         const { email, password } = body;
 
         const user = await User.findOne({ 'email': email })
-        
+
         if (!user) {
             set.status = 'Unauthorized'
             return { error: 'Invalid Credentials' }
@@ -74,12 +76,18 @@ export const authorization = new Elysia({ name: 'authorization' })
             { expiresIn: config.expiresIn }
         )
 
-        await User.updateOne({ _id: user._id }, { $set: { token }})
+        await User.updateOne({ _id: user._id }, { $set: { token } })
+            .catch(() => {
+                set.status = 'Internal Server Error'
+                return {
+                    error: "Can't save User's `token` field to database"
+                }
+            })
 
         const data = {
+            _id: user._id,
             email: user.email,
-            firstName: user.profile?.firstName,
-            lastName: user.profile?.lastName,
+            profile: user.profile || null,
             role: user.role,
             token: token,
         };
@@ -88,22 +96,3 @@ export const authorization = new Elysia({ name: 'authorization' })
         return { message: 'Logged in successfuly', data: data }
 
     }, { body: signDto })
-    .onError(({ code, error }) => {
-        switch (code) {
-            case "VALIDATION":
-                console.log(error.all)
-                return {
-                    message: error.model.error,
-                    details: error.all.map((val) => {
-                        const { path, schema, message } = val
-                        const field = path.substring(1)
-                        return { field: field, error: schema.error, message: message }
-                    })
-                }
-            default:
-                return {
-                    error: error.name,
-                    message: error.message
-                }
-        }
-    })
