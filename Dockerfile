@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY bun.lockb ./
 
+RUN bun install
 RUN bun install --production
 
 COPY src src
