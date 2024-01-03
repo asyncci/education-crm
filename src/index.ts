@@ -3,6 +3,7 @@ import { swagger } from '@elysiajs/swagger';
 import { routes } from "./routes";
 import mongoose from "mongoose";
 import { config } from "../config";
+import cors from "@elysiajs/cors";
 
 if(!Bun.env.MONGODB) {
   throw new Error('Provide the "MONGODB" env variable (link to database server)')
@@ -39,5 +40,6 @@ const app = new Elysia()
       ]
     }
   }))
+  .use(cors())
   .use(routes(''))
   .listen(config.port);
