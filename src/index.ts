@@ -6,7 +6,10 @@ import { config } from "../config";
 
 await mongoose.connect(Bun.env.MONGODB || '')
   .then(() => console.log('Successfuly connected to MongoDB'))
-  .catch(() => console.log('Provide the "MONGODB" env variable (link to database server)'));
+  .catch(() => {
+    console.error('Provide the "MONGODB" env variable (link to database server)')
+    throw new Error("Can't connect to database")
+  });
 
 const app = new Elysia()
   .use(swagger({
