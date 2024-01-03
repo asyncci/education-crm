@@ -1,5 +1,5 @@
 import Elysia from "elysia";
-import { userController } from "./routes/authorization/userController";
+import { userController } from "./routes/user/userController";
 import { profileController } from "./routes/profile/profileController";
 
 export const routes = (route: string) => new Elysia({ name: 'routes', prefix: route })
