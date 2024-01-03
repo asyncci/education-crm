@@ -11,7 +11,7 @@ export const userController = new Elysia({ name: 'authorization' })
         const user = await User.findOne({ 'email': email })
         if (user) {
             set.status = 'Conflict'
-            return { error: 'User already exists' }
+            return { success: false, error: 'User already exists' }
         }
 
         let userData = new User()
@@ -33,6 +33,7 @@ export const userController = new Elysia({ name: 'authorization' })
                     .catch(() => {
                         set.status = 'Internal Server Error'
                         return {
+                            success: false,
                             error: "Can't save user to database"
                         }
                     })
@@ -45,11 +46,11 @@ export const userController = new Elysia({ name: 'authorization' })
                     token: token,
                 };
                 set.status = 'Created'
-                return { message: 'User created', data: data }
+                return { success: true, message: 'User created', data: data }
             })
             .catch(() => {
                 set.status = 'Internal Server Error'
-                return { error: 'Database cannot register user' }
+                return { success: false, error: 'Database cannot register user' }
             })
     }, { body: registerDto })
     .post('/auth', async ({ body, set }) => {
@@ -59,7 +60,7 @@ export const userController = new Elysia({ name: 'authorization' })
 
         if (!user) {
             set.status = 'Unauthorized'
-            return { error: 'Invalid Credentials' }
+            return { success: false, error: 'Invalid Credentials' }
         }
 
         const passwordString = typeof password == 'number' ? password.toString() : password;
@@ -67,7 +68,7 @@ export const userController = new Elysia({ name: 'authorization' })
 
         if (!validPassword) {
             set.status = 'Unauthorized'
-            return { error: 'Invalid Credentials' }
+            return { success: false, error: 'Invalid Credentials' }
         }
 
         const token = sign(
@@ -80,6 +81,7 @@ export const userController = new Elysia({ name: 'authorization' })
             .catch(() => {
                 set.status = 'Internal Server Error'
                 return {
+                    success: false,
                     error: "Can't save User's `token` field to database"
                 }
             })
@@ -93,6 +95,6 @@ export const userController = new Elysia({ name: 'authorization' })
         };
 
         set.status = 'Accepted'
-        return { message: 'Logged in successfuly', data: data }
+        return { success: true, message: 'Logged in successfuly', data: data }
 
     }, { body: signDto })

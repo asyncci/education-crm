@@ -17,12 +17,12 @@ export function authCheck(headers: any, set: any) {
     const token = headers.authorization;
     if (!token) {
         set.status = 'Unauthorized'
-        return { error: 'Token was not provided' }
+        return { success:false, error: 'Token was not provided' }
     }
 
     const verified = verify(token, config.secretKey);
     if (!verified) {
         set.status = 'Unauthorized'
-        return { error: 'Failed to authenticate token' }
+        return { success:false, error: 'Failed to authenticate token' }
     }
 }

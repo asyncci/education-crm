@@ -7,7 +7,7 @@
   "dependencies": {
     "@elysiajs/swagger": "0.8.0",
     "@types/jsonwebtoken": "^9.0.5",
-    "elysia": "0.8.0",
+    "elysia": "latest",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3"
   },
