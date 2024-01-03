@@ -1,12 +1,12 @@
 import Elysia from "elysia";
 import { userController } from "./routes/user/userController";
 import { profileController } from "./routes/profile/profileController";
+import { projectController } from "./routes/mentorProjects/projectController";
 
 export const routes = (route: string) => new Elysia({ name: 'routes', prefix: route })
     .onError(({ code, error }) => {
         switch (code) {
             case "VALIDATION":
-                console.log(error.all)
                 return {
                     message: error.model.error,
                     details: error.all.map((val) => {
@@ -24,3 +24,4 @@ export const routes = (route: string) => new Elysia({ name: 'routes', prefix: ro
     })
     .use(userController)
     .use(profileController('/profile'))
+    .use(projectController('/project'))
