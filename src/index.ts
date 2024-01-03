@@ -4,7 +4,8 @@ import { routes } from "./routes";
 import mongoose from "mongoose";
 import { config } from "../config";
 
-await mongoose.connect(process.env.MONGODB || '')
+console.log(Bun.env)
+await mongoose.connect(Bun.env.MONGODB || '')
   .then(() => console.log('Successfuly connected to MongoDB'))
   .catch(() => {
     console.error('Provide the "MONGODB" env variable (link to database server)')
