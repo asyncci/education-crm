@@ -4,12 +4,15 @@ import { routes } from "./routes";
 import mongoose from "mongoose";
 import { config } from "../config";
 
-console.log(Bun.env)
-await mongoose.connect(Bun.env.MONGODB)
+console.log(Bun.env.MONGODB)
+if(!Bun.env.MONGODB) {
+  throw new Error('Provide the "MONGODB" env variable (link to database server)')
+}
+
+await mongoose.connect(Bun.env.MONGODB!)
   .then(() => console.log('Successfuly connected to MongoDB'))
-  .catch(() => {
-    console.error('Provide the "MONGODB" env variable (link to database server)')
-    throw new Error("Can't connect to database")
+  .catch((err) => {
+    throw new Error(`Can't connect to database: ${err}`)
   });
 
 const app = new Elysia()
