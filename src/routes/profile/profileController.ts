@@ -56,7 +56,10 @@ export const profileController = (route: string) => new Elysia({ name: 'profile'
                     return { success: false, error: 'User not found' }
                 }
             }, {
-                body: mentorProfileDto
+                body: mentorProfileDto,
+                detail: {
+                    tags: ['Create Mentor Profile']
+                }
             })
             .post('/student', async ({ body, headers, set }) => {
                 const { authorization } = headers;
@@ -101,7 +104,10 @@ export const profileController = (route: string) => new Elysia({ name: 'profile'
                     return { success: false, error: 'User not found' }
                 }
             }, {
-                body: studentProfileDto
+                body: studentProfileDto,
+                detail: {
+                    tags: ['Create Student Profile']
+                }
             })
     })
     .get('mentor/:profileId', async ({ params, set }) => {
@@ -117,7 +123,10 @@ export const profileController = (route: string) => new Elysia({ name: 'profile'
     }, {
         params: t.Object({
             profileId: t.String()
-        })
+        }),
+        detail: {
+            tags: ['Get Mentor']
+        }
     })
     .get('/student/:profileId', async ({ params, set }) => {
         const { profileId } = params
@@ -132,7 +141,10 @@ export const profileController = (route: string) => new Elysia({ name: 'profile'
     }, {
         params: t.Object({
             profileId: t.String()
-        })
+        }),
+        detail: {
+            tags: ['Get Student']
+        }
     })
     .get('/mentors', async ({ set }) => {
         const profiles = await MentorProfile.find({})
@@ -143,6 +155,10 @@ export const profileController = (route: string) => new Elysia({ name: 'profile'
         }
 
         return { success: true, message: 'Successfuly got mentor profiles', data: profiles }
+    }, {
+        detail: {
+            tags: ['List of Mentors']
+        }
     })
     .get('/students', async ({ set }) => {
         const profiles = await StudentProfile.find({})
@@ -153,4 +169,8 @@ export const profileController = (route: string) => new Elysia({ name: 'profile'
         }
 
         return { success: true, message: 'Successfuly got student profiles', data: profiles }
+    },{
+        detail: {
+            tags: ['List of Students']
+        }
     })

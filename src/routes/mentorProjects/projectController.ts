@@ -6,7 +6,7 @@ import { MentorProject } from "./projectModel";
 import { projectSignDto } from "./projectDto";
 
 export const projectController = (route: string) => new Elysia({ name: 'mentorProjects', prefix: route })
-    .use(authDto) 
+    .use(authDto)
     .guard({
         headers: 'strictAuthenticate',
         beforeHandle({ headers, set }) {
@@ -53,7 +53,12 @@ export const projectController = (route: string) => new Elysia({ name: 'mentorPr
                         set.status = 'Internal Server Error'
                         return { success: false, error: "Can't save project into database" }
                     })
-            }, { body: projectSignDto })
+            }, {
+                body: projectSignDto,
+                detail: {
+                    tags: ['Create Project']
+                }
+            })
             .delete('/delete', async ({ headers, set, body }) => {
                 const project = await MentorProject.findById(body.projectId)
 
@@ -85,7 +90,10 @@ export const projectController = (route: string) => new Elysia({ name: 'mentorPr
             }, {
                 body: t.Object({
                     projectId: t.String()
-                })
+                }),
+                detail: {
+                    tags: ['Delete Project']
+                }
             })
     })
     .get('/:projectId', async ({ params, set }) => {
@@ -99,7 +107,10 @@ export const projectController = (route: string) => new Elysia({ name: 'mentorPr
     }, {
         params: t.Object({
             projectId: t.String(),
-        })
+        }),
+        detail: {
+            tags: ['Get Project']
+        }
     })
     .get('/by-mentor/:profileId', async ({ params, set }) => {
         const projects = await MentorProject.find({ mentor: params.profileId })
@@ -112,15 +123,22 @@ export const projectController = (route: string) => new Elysia({ name: 'mentorPr
     }, {
         params: t.Object({
             profileId: t.String(),
-        })
+        }),
+        detail: {
+            tags: ['Get Mentor Project']
+        }
     })
-    .get('/all', async({ set }) => {
+    .get('/all', async ({ set }) => {
         const projects = await MentorProject.find({})
 
-        if(!projects) {
+        if (!projects) {
             set.status = 'Not Found'
-            return { success: false, error: "Projects not found"}
+            return { success: false, error: "Projects not found" }
         }
 
-        return { success: true, message: 'Whole list of projects', data: { projects: projects} }
+        return { success: true, message: 'Whole list of projects', data: { projects: projects } }
+    }, {
+        detail: {
+            tags: ['Get Projects']
+        }
     })

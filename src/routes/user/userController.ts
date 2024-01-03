@@ -52,7 +52,7 @@ export const userController = new Elysia({ name: 'authorization' })
                 set.status = 'Internal Server Error'
                 return { success: false, error: 'Database cannot register user' }
             })
-    }, { body: registerDto })
+    }, { body: registerDto, detail: { tags: ['User Register']} })
     .post('/auth', async ({ body, set }) => {
         const { email, password } = body;
 
@@ -97,4 +97,4 @@ export const userController = new Elysia({ name: 'authorization' })
         set.status = 'Accepted'
         return { success: true, message: 'Logged in successfuly', data: data }
 
-    }, { body: signDto })
+    }, { body: signDto, detail: { tags: ['Auth']}})
